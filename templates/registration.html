@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Auth Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Header Navigation Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: rgba(248, 249, 253, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(18, 177, 209, 0.2);
+            box-shadow: 0 2px 10px rgba(133, 189, 215, 0.3);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #1089d3;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #1089d3;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1089d3;
+        }
+
+        .nav-desktop {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            color: #666;
+        }
+
+        .nav-link:hover {
+            color: #1089d3;
+            background: rgba(18, 177, 209, 0.1);
+        }
+
+        .nav-link.active {
+            background: #1089d3;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(18, 177, 209, 0.1);
+            color: #1089d3;
+        }
+
+        .nav-mobile {
+            display: none;
+            border-top: 1px solid rgba(18, 177, 209, 0.2);
+            background: rgba(248, 249, 253, 0.98);
+            padding: 16px 20px;
+        }
+
+        .nav-mobile.show {
+            display: block;
+        }
+
+        .nav-mobile .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-desktop {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        /* Adjust body padding for fixed header */
+        body {
+            padding-top: 84px;
+        }
+
+        .container {
+            max-width: 350px;
+            width: 90%;
+            background: #f8f9fd;
+            border-radius: 40px;
+            padding: 25px 35px;
+            border: 5px solid #fff;
+            box-shadow: rgba(133, 189, 215, 0.88) 0px 30px 30px -20px;
+            margin: 0 auto;
+        }
+
+        .heading {
+            text-align: center;
+            font-weight: 900;
+            font-size: 30px;
+            color: #1089d3;
+            margin-bottom: 20px;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .input {
+            width: 100%;
+            background: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 20px;
+            box-shadow: #cff0ff 0px 10px 10px -5px;
+            border-inline: 2px solid transparent;
+            font-size: 16px;
+            transition: border-inline 0.2s ease;
+        }
+
+        .input:focus {
+            outline: none;
+            border-inline: 2px solid #12b1d1;
+        }
+
+        .error {
+            color: #dc2626;
+            font-size: 0.75rem;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .ebooklet-selection {
+            margin-top: 10px;
+            background: #f0f7ff;
+            border: 1px solid #12b1d1;
+            border-radius: 12px;
+            padding: 15px 20px;
+        }
+
+        .ebooklet-selection label {
+            font-weight: 600;
+            color: #1089d3;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .ebooklet-select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #12B1D1;
+            font-size: 16px;
+            cursor: pointer;
+            background: white;
+        }
+
+        .loading-text {
+            color: #666;
+            font-style: italic;
+        }
+
+        .selected-ebooklet {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #e0f0ff;
+            border: 1px solid #12B1D1;
+            border-radius: 8px;
+            color: #1089d3;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 2px 6px rgba(18, 177, 209, 0.4);
+            user-select: none;
+            display: none;
+        }
+
+        .selected-ebooklet.show {
+            display: block;
+        }
+
+        .login-button {
+            display: block;
+            width: 100%;
+            font-weight: bold;
+            background: linear-gradient(45deg, #1089d3 0%, #12b1d1 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: rgba(133, 189, 215, 0.88) 0px 20px 10px -15px;
+            border: none;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .login-button:hover {
+            transform: scale(1.03);
+            box-shadow: rgba(133, 189, 215, 0.88) 0px 23px 10px -20px;
+        }
+
+        .login-button:active {
+            transform: scale(0.95);
+            box-shadow: rgba(133, 189, 215, 0.88) 0px 15px 10px -10px;
+        }
+
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="header-content">
+                <!-- Logo -->
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <svg class="nav-icon" fill="white" viewBox="0 0 24 24">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                        </svg>
+                    </div>
+                    <span class="logo-text">AuthPortal</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="nav-desktop">
+                    <a href="/api/login-form/" class="nav-link" id="login-nav">
+                        <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v12z" />
+                        </svg>
+                        <span>Login</span>
+                    </a>
+                    <a href="/api/registration-form/" class="nav-link active" id="register-nav">
+                        <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                        <span>Register</span>
+                    </a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle mobile menu">
+                    <svg class="nav-icon" id="menu-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <nav class="nav-mobile" id="mobile-menu">
+                <a href="/api/login-form/" class="nav-link" id="mobile-login-nav">
+                    <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v12z" />
+                    </svg>
+                    <span>Login</span>
+                </a>
+                <a href="/api/registration-form/" class="nav-link active" id="mobile-register-nav">
+                    <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                    <span>Register</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="heading">Sign Up</div>
+        <div id="alertContainer"></div>
+
+        <form id="registrationForm" class="form" novalidate>
+            <input class="input" type="text" name="username" id="username" placeholder="Username" required />
+            <div class="error" id="username-error"></div>
+
+            <input class="input" type="email" name="email" id="email" placeholder="Email" required />
+            <div class="error" id="email-error"></div>
+
+            <input class="input" type="password" name="password" id="password" placeholder="Password" required />
+            <div class="error" id="password-error"></div>
+
+            <input class="input" type="tel" name="phone_number" id="phone_number"
+                placeholder="Phone Number (unique, only once)" required />
+            <div class="error" id="phone_number-error"></div>
+
+            <input class="input" type="text" name="memberID" id="memberID" placeholder="Member ID (unique, only once)"
+                required />
+            <div class="error" id="memberID-error"></div>
+
+            <div class="ebooklet-selection">
+                <label for="ebooklet-dropdown">Select Ebooklet:</label>
+                <select name="ebooklet" id="ebooklet-dropdown" class="ebooklet-select" required>
+                    <option value="" disabled selected>-- Select an ebooklet --</option>
+                </select>
+                <div class="error" id="ebooklet-error"></div>
+            </div>
+
+            <button type="submit" class="login-button" id="submitBtn">
+                Create Account
+            </button>
+        </form>
+
+        <script>
+            // Configuration
+            const backendBaseUrl = window.location.origin;
+            const form = document.getElementById('registrationForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const alertContainer = document.getElementById('alertContainer');
+            let formData = {};
+
+            // Utility Functions
+            function showAlert(message, type = 'error') {
+                const container = document.getElementById('alertContainer');
+                if (container) {
+                    container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+                    setTimeout(() => {
+                        container.innerHTML = '';
+                    }, 5000);
+                }
+            }
+
+            function showError(fieldName, message) {
+                const errorElement = document.getElementById(`${fieldName}-error`);
+                if (errorElement) {
+                    errorElement.textContent = message;
+                    errorElement.classList.add('show');
+                }
+            }
+
+            function clearError(fieldName) {
+                const errorElement = document.getElementById(`${fieldName}-error`);
+                if (errorElement) {
+                    errorElement.textContent = '';
+                    errorElement.classList.remove('show');
+                }
+            }
+
+            function clearAllErrors() {
+                const errorElements = document.querySelectorAll('.error');
+                errorElements.forEach(element => {
+                    element.textContent = '';
+                    element.classList.remove('show');
+                });
+            }
+
+            function getCSRFToken() {
+                const cookieValue = document.cookie.match('(^|;)\\s*csrftoken\\s*=\\s*([^;]+)');
+                return cookieValue ? cookieValue.pop() : '';
+            }
+
+            // Form Validation
+            function validateForm() {
+                clearAllErrors();
+                let isValid = true;
+
+                if (!formData.username?.trim()) {
+                    showError('username', 'Username is required');
+                    isValid = false;
+                }
+                if (!formData.email?.trim()) {
+                    showError('email', 'Email is required');
+                    isValid = false;
+                }
+                if (!formData.password?.trim()) {
+                    showError('password', 'Password is required');
+                    isValid = false;
+                }
+                if (!formData.phone_number?.trim()) {
+                    showError('phone_number', 'Phone number is required');
+                    isValid = false;
+                }
+                if (!formData.memberID?.trim()) {
+                    showError('memberID', 'Member ID is required');
+                    isValid = false;
+                }
+                if (!formData.ebooklets?.[0]) {
+                    showError('ebooklet', 'Please select an ebooklet');
+                    isValid = false;
+                }
+                return isValid;
+            }
+
+            // Ebooklet Loading
+            async function loadEbooklets() {
+                const select = document.getElementById('ebooklet-dropdown');
+                if (!select) return;
+
+                select.innerHTML = '<option value="" disabled selected>-- Loading ebooklets... --</option>';
+
+                try {
+                    const response = await fetch(`${backendBaseUrl}/api/ebooklets/`, {
+                        method: 'GET',
+                        credentials: 'include',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch ebooklets: ${response.status}`);
+                    }
+
+                    const ebooklets = await response.json();
+
+                    select.innerHTML = '<option value="" disabled selected>-- Select an ebooklet --</option>';
+
+                    ebooklets.forEach(ebooklet => {
+                        const option = document.createElement('option');
+                        option.value = ebooklet.id;
+                        option.textContent = ebooklet.name || ebooklet.filename || 'Unnamed ebooklet';
+                        select.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Fetch ebooklets error:', error);
+                    select.innerHTML = '<option value="" disabled selected>-- Error loading ebooklets --</option>';
+                    showAlert('Error loading ebooklets. Please try again later.');
+                }
+            }
+
+            // Form Handling
+            function handleInputChange(e) {
+                const input = e.target;
+                if (input.name === 'ebooklet') {
+                    formData.ebooklets = input.value ? [input.value] : [];
+                } else {
+                    formData[input.name] = input.value;
+                }
+                clearError(input.name);
+            }
+
+            async function handleSubmit(event) {
+                event.preventDefault();
+
+                const select = document.getElementById('ebooklet-dropdown');
+                formData.ebooklets = select.value ? [parseInt(select.value, 10)] : [];
+
+                if (!validateForm()) return;
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating Account...';
+
+                try {
+                    const response = await fetch(`${backendBaseUrl}/api/register/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken()
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        showAlert('Account created successfully! Redirecting to login...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/api/login-form/';
+                        }, 2000);
+                    } else {
+                        const data = await response.json().catch(() => ({ error: 'No details provided' }));
+                        let errorMessages = '';
+                        for (const key in data) {
+                            errorMessages += `${key}: ${Array.isArray(data[key]) ? data[key].join(', ') : data[key]}\n`;
+                        }
+                        showAlert('Registration failed:\n' + errorMessages);
+                    }
+                } catch (error) {
+                    console.error('Registration fetch error:', error);
+                    showAlert('An error occurred: ' + error.message);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create Account';
+                }
+            }
+
+            // Mobile Menu
+            function toggleMobileMenu() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                const menuIcon = document.getElementById('menu-icon');
+
+                if (mobileMenu?.classList.contains('show')) {
+                    mobileMenu.classList.remove('show');
+                    menuIcon.innerHTML = '<path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>';
+                } else if (mobileMenu) {
+                    mobileMenu.classList.add('show');
+                    menuIcon.innerHTML = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
+                }
+            }
+
+            // Event Listeners
+            if (form) {
+                const inputs = form.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    input.addEventListener('input', handleInputChange);
+                    input.addEventListener('change', handleInputChange);
+                });
+                form.addEventListener('submit', handleSubmit);
+            }
+
+            // Initialize
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.getElementById('registrationForm');
+                if (form) {
+                    formData = {};
+                    const inputs = form.querySelectorAll('input, select');
+                    inputs.forEach(input => {
+                        if (input.name === 'ebooklet') {
+                            formData.ebooklets = input.value ? [parseInt(input.value, 10)] : [];
+                        } else if (input.name) {
+                            formData[input.name] = input.value;
+                        }
+                    });
+                    loadEbooklets();
+                }
+            });
+        </script>
+    </div>
+</body>
+
+</html>

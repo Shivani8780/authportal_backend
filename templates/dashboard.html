@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Your Ebooklets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .dashboard-header {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h2 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .ebooklets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .ebooklet-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .ebooklet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .ebooklet-header {
+            background-color: #3498db;
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .ebooklet-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .ebooklet-body {
+            padding: 1.5rem;
+        }
+
+        .ebooklet-info {
+            margin-bottom: 1rem;
+        }
+
+        .ebooklet-info p {
+            margin: 0.5rem 0;
+            color: #555;
+        }
+
+        .view-pdf-btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .view-pdf-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .ebooklet-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #7f8c8d;
+        }
+
+        .user-info {
+            background-color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .user-info p {
+            margin: 0.25rem 0;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <h1>Ebooklet Dashboard</h1>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h2>Welcome to Your Dashboard</h2>
+            <p>Here you can view and access all your approved ebooklets.</p>
+        </div>
+
+        <div class="user-info">
+            <p><strong>User:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+        </div>
+
+        <div class="ebooklets-grid">
+            {% if ebooklets %}
+            {% for ebooklet in ebooklets %}
+            <div class="ebooklet-card">
+                <div class="ebooklet-header">
+                    <h3>{{ ebooklet.name }}</h3>
+                </div>
+                <div class="ebooklet-body">
+                    <div class="ebooklet-info">
+                        <p><strong>ID:</strong> {{ ebooklet.id }}</p>
+                        <p><strong>View Option:</strong> {{ ebooklet.view_option|title }}</p>
+                        <p><strong>Status:</strong> {% if ebooklet.approved %}Approved{% else %}Pending{% endif %}</p>
+                    </div>
+                    <div class="ebooklet-actions">
+                        <a href="{% url 'pdf-viewer' ebooklet.id %}" class="btn btn-primary">
+                            View PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <h3>No ebooklets available</h3>
+                <p>You don't have any approved ebooklets yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>

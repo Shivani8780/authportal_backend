@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Approved Ebooklets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0e5ec;
+            min-height: 100vh;
+        }
+
+        .container {
+            min-height: 100vh;
+            background-color: #e0e5ec;
+            padding: 50px 20px;
+        }
+
+        .content-wrapper {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 20px;
+            background-color: #5a657a;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #f0f4ff;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .ebooklets-container {
+            margin-bottom: 20px;
+            color: #f0f4ff;
+            font-weight: 600;
+        }
+
+        .ebooklet-card {
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background-color: #2c2c54;
+            cursor: pointer;
+            min-height: 180px;
+            margin-bottom: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .ebooklet-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .ebooklet-header {
+            background-color: #2c2c54;
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 180px;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        .ebooklet-content {
+            flex: 1;
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background-color: #f0f4ff;
+        }
+
+        .chapter-name {
+            font-weight: 600;
+            font-size: 20px;
+            color: #222;
+        }
+
+        .continue-button {
+            margin-top: 15px;
+            align-self: flex-start;
+            padding: 10px 25px;
+            background-color: #2c2c54;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 8px rgba(44, 44, 84, 0.4);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .continue-button:hover {
+            background-color: #1a1a3d;
+            box-shadow: 0 6px 12px rgba(26, 26, 61, 0.6);
+        }
+
+        /* Loading state */
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-size: 18px;
+            color: #5a657a;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #5a657a;
+            font-size: 18px;
+        }
+
+        .refresh-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #5a657a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .refresh-button:hover {
+            background-color: #4a5568;
+        }
+
+        /* Hide elements for demo purposes */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading" class="loading-container">
+        <div>Loading your ebooklets...</div>
+    </div>
+
+    <div id="empty-state" class="empty-state hidden">
+        <div>No approved ebooklets available.</div>
+        <button class="refresh-button" onclick="fetchEbooklets()">
+            Refresh
+        </button>
+    </div>
+
+    <div id="main-content" class="container hidden">
+        <div class="content-wrapper">
+            <h2 class="page-title">Your Approved Ebooklets</h2>
+            <div id="ebooklets-container" class="ebooklets-container">
+                <!-- Ebooklet cards will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchEbooklets();
+        });
+
+        function fetchEbooklets() {
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            const mainContent = document.getElementById('main-content');
+            const container = document.getElementById('ebooklets-container');
+
+            loading.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            mainContent.classList.add('hidden');
+            container.innerHTML = '';
+
+            fetch('/api/user/ebooklet/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loading.classList.add('hidden');
+                    if (data.ebooklets && data.ebooklets.length > 0) {
+                        mainContent.classList.remove('hidden');
+                        data.ebooklets.forEach(ebooklet => {
+                            if (ebooklet.approved && ebooklet.view_option === 'full') {
+                                const card = document.createElement('div');
+                                card.className = 'ebooklet-card';
+                                card.onclick = () => {
+                                    window.location.href = `/api/ebooklet/${ebooklet.id}/view/`;
+                                };
+
+                                card.innerHTML = `
+                                    <div class="ebooklet-header">
+                                        ${ebooklet.name}
+                                    </div>
+                                    <div class="ebooklet-content">
+                                        <div class="chapter-name">
+                                            Selected eBooklet
+                                        </div>
+                                        <a href="/api/ebooklet/${ebooklet.id}/view/" class="continue-button"
+                                            onclick="event.stopPropagation()">
+                                            Continue
+                                        </a>
+                                    </div>
+                                `;
+                                container.appendChild(card);
+                            }
+                        });
+                        // After adding all cards, check if any were actually added
+                        if (container.children.length === 0) {
+                            emptyState.classList.remove('hidden');
+                        }
+                    } else {
+                        emptyState.classList.remove('hidden');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching ebooklets:', error);
+                    loading.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                    // Optionally show an error message
+                    emptyState.querySelector('div').textContent = 'Error loading ebooklets. Please try again.';
+                });
+        }
+    </script>
+</body>
+
+
+</html>
