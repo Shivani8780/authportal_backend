@@ -316,6 +316,40 @@
             color: #155724;
             border: 1px solid #c3e6cb;
         }
+
+        .gender-selection {
+            margin-top: 10px;
+            background: #f0f7ff;
+            border: 1px solid #12b1d1;
+            border-radius: 12px;
+            padding: 15px 20px;
+        }
+
+        .gender-selection label {
+            font-weight: 600;
+            color: #1089d3;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .gender-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .gender-options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .gender-options input {
+            margin-right: 8px;
+            accent-color: #12b1d1;
+        }
     </style>
 </head>
 
@@ -409,6 +443,19 @@
                 <div class="error" id="ebooklet-error"></div>
             </div>
 
+            <div class="gender-selection">
+                <label for="gender">Gender:</label>
+                <div class="gender-options">
+                    <label>
+                        <input type="radio" name="gender" value="male" required> Male
+                    </label>
+                    <label>
+                        <input type="radio" name="gender" value="female" required> Female
+                    </label>
+                </div>
+                <div class="error" id="gender-error"></div>
+            </div>
+
             <button type="submit" class="login-button" id="submitBtn">
                 Create Account
             </button>
@@ -491,6 +538,10 @@
                     showError('ebooklet', 'Please select an ebooklet');
                     isValid = false;
                 }
+                if (!formData.gender) {
+                    showError('gender', 'Please select your gender');
+                    isValid = false;
+                }
                 return isValid;
             }
 
@@ -537,6 +588,8 @@
                 const input = e.target;
                 if (input.name === 'ebooklet') {
                     formData.ebooklets = input.value ? [input.value] : [];
+                } else if (input.name === 'gender') {
+                    formData.gender = input.value;
                 } else {
                     formData[input.name] = input.value;
                 }

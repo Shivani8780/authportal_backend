@@ -40,6 +40,7 @@ class UserRegistrationView(View):
             phone_number = data.get('phone_number')
             memberID = data.get('memberID')
             ebooklet_ids = data.get('ebooklets', [])
+            gender = data.get('gender')
 
             if not username or not password:
                 return JsonResponse({'error': 'Username and password are required.'}, status=400)
@@ -50,6 +51,7 @@ class UserRegistrationView(View):
                 username=username, email=email, password=password)
             user.phone_number = phone_number
             user.memberID = memberID
+            user.gender = gender
             user.save()
 
             # Create UserEBookletSelection entries

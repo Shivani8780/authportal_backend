@@ -6,6 +6,7 @@ class CustomUser(AbstractUser):
     # Additional fields can be added here if needed
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     memberID = models.CharField(max_length=50, blank=True, null=True)
+    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female')], blank=True, null=True)
 
     def __str__(self):
         return self.username

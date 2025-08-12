@@ -142,22 +142,10 @@
             position: relative;
             background: #FFFEF7;
             border: 3px solid #8B4513;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 10px;
             padding: 10px;
-            overflow: auto;
-            cursor: grab;
-            touch-action: pan-x pan-y pinch-zoom;
-            transform-origin: center center;
-            /* Performance optimizations */
-            will-change: auto;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            transform-style: preserve-3d;
-            -webkit-transform-style: preserve-3d;
+            overflow: hidden;
+            touch-action: none;
         }
 
         .page-container:active {
@@ -201,9 +189,14 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             cursor: grab;
             display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
             transform-origin: center center;
-            transition: transform 0.1s ease-out;
-            touch-action: pan-x pan-y pinch-zoom;
+            touch-action: none;
+            will-change: transform;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
 
         .pdf-canvas:active {
@@ -226,11 +219,11 @@
 
         .nav-btn {
             pointer-events: auto;
-            width: 50px;
-            height: 50px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             background: rgba(139, 69, 19, 0.8);
-            border: 2px solid #D4AF37;
+            border: 3px solid #D4AF37;
             color: #FFD700;
             cursor: pointer;
             display: flex;
@@ -238,7 +231,7 @@
             align-items: center;
             transition: all 0.3s ease;
             opacity: 0.7;
-            margin: 0 10px;
+            margin: 0 15px;
         }
 
         .nav-btn:hover {
@@ -254,8 +247,8 @@
         }
 
         .nav-btn svg {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             fill: currentColor;
         }
 
@@ -411,14 +404,14 @@
             }
 
             .nav-btn {
-                width: 60px;
-                height: 60px;
+                width: 65px;
+                height: 65px;
                 margin: 0 15px;
             }
 
             .nav-btn svg {
-                width: 28px;
-                height: 28px;
+                width: 30px;
+                height: 30px;
             }
         }
 
@@ -514,11 +507,6 @@
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-        // ===== SCREENSHOT PROTECTION SYSTEM =====
-        let screenshotAttempts = 0;
-        let isProtectionActive = true;
-        let screenshotWarningShown = false;
-
         // Screenshot Detection and Protection
         function initScreenshotProtection() {
             // Focus on reliable detection methods only
@@ -608,17 +596,6 @@
                         lastPinchDistance = Math.sqrt(dx * dx + dy * dy);
                         isPinchZooming = true; // Assume it's pinch zoom until proven otherwise
                     }
-                    // Only trigger on 3+ fingers (likely screenshot gesture)
-                    else if (touchCount >= 3) {
-                        handleScreenshotAttempt('Multi-touch Gesture');
-                    }
-                    // Rapid successive touches might indicate screenshot attempt
-                    else if (touchCount === 1 && now - touchStartTime < 200 && touchStartTime > 0) {
-                        // Quick successive single touches might be screenshot attempts
-                        handleScreenshotAttempt('Rapid Touch Pattern');
-                    }
-
-                    touchStartTime = now;
                 });
 
                 // Monitor touch movement to confirm pinch vs screenshot
@@ -850,18 +827,6 @@
             document.head.appendChild(style);
         }
 
-        // Initialize protection when page loads
-        document.addEventListener('DOMContentLoaded', function () {
-            initScreenshotProtection();
-            addContentProtection();
-            console.log('Screenshot protection initialized');
-        });
-
-        // Make closeScreenshotWarning globally accessible
-        window.closeScreenshotWarning = closeScreenshotWarning;
-
-        // ===== END SCREENSHOT PROTECTION SYSTEM =====
-
         let pdfDoc = null;
         let pageNum = 1;
         let pageRendering = false;
@@ -1041,13 +1006,12 @@
                 canvasOffsetY = offsetY;
             }
 
-            // Use CSS transform with hardware acceleration
-            const transform = `translate3d(${offsetX}px, ${offsetY}px, 0) scale(${currentScale})`;
-            pageContainer.style.transform = transform;
-            pageContainer.style.transformOrigin = 'center center';
+            // Apply transform to canvas with translation from center
+            const transform = `translate(-50%, -50%) translate3d(${offsetX}px, ${offsetY}px, 0) scale(${currentScale})`;
+            canvas.style.transform = transform;
 
-            // Force hardware acceleration
-            pageContainer.style.willChange = currentScale > 1.0 ? 'transform' : 'auto';
+            // Force hardware acceleration on canvas
+            canvas.style.willChange = currentScale > 1.0 ? 'transform' : 'auto';
         }
 
         function queueRenderPage(num, showAnimation = true) {
@@ -1322,21 +1286,6 @@
 
         // Start loading the PDF
         initPDF();
-
-        // Prevent right-click, drag, select, copy
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('dragstart', e => e.preventDefault());
-        document.addEventListener('selectstart', e => e.preventDefault());
-        document.addEventListener('copy', e => e.preventDefault());
-
-        // Prevent F12, Ctrl+Shift+I, Ctrl+U
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12' ||
-                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-                (e.ctrlKey && e.key === 'u')) {
-                e.preventDefault();
-            }
-        });
     </script>
 </body>
 

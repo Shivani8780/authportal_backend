@@ -37,3 +37,8 @@ class UserEBookletSelectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserEBookletSelection
         fields = ('id', 'user', 'ebooklet', 'payment_verified', 'approved', 'selected_at')
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'phone_number', 'memberID', 'gender']

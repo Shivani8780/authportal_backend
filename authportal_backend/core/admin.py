@@ -57,11 +57,11 @@ class CustomUserChangeForm(forms.ModelForm):
 class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ['username', 'email', 'is_staff', 'is_active', 'phone_number', 'memberID', 'get_ebooklet_approved']
+    list_display = ['username', 'email', 'is_staff', 'is_active', 'phone_number', 'memberID', 'gender', 'get_ebooklet_approved']
     search_fields = ['username', 'email', 'phone_number', 'memberID']
     list_filter = ['is_staff', 'is_active']
     fieldsets = (
-        ('Personal info', {'fields': ('username', 'email', 'phone_number', 'memberID')}),
+        ('Personal info', {'fields': ('username', 'email', 'phone_number', 'memberID', 'gender')}),
         # Removed Permissions section as per user request
         # ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),  
