@@ -25,9 +25,9 @@ SECRET_KEY = 'django-insecure-xhkc$y)ssbs6b!3t*!%y*)#*r-&6(a%z&gv54j^xh%5jzwmg#o
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'False'
 
-ALLOWED_HOSTS = ['127.0.0.1' ,'localhost', 'bhudevnetwork.pythonanywhere.com','6f3c2ab00bba.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1' ,'localhost', 'Ebooklet-BhudevNetwork.pythonanywhere.com','6f3c2ab00bba.ngrok-free.app']
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
@@ -134,8 +134,16 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-CSRF_TRUSTED_ORIGINS = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS',
-                                 'http://localhost:3000 http://127.0.0.1:3000 http://localhost:5173 http://127.0.0.1:5173 http://localhost:4028 http://127.0.0.1:4028 https://6f3c2ab00bba.ngrok-free.app').split()
+CSRF_TRUSTED_ORIGINS = [
+    'https://Ebooklet-BhudevNetwork.pythonanywhere.com',
+    'https://6f3c2ab00bba.ngrok-free.app',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:4028',
+    'http://127.0.0.1:4028'
+]
 
 
 CORS_ALLOW_CREDENTIALS = True
