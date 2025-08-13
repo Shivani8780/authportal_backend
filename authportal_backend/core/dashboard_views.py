@@ -30,6 +30,7 @@ def dashboard_home_view(request):
             ebooklets_data.append({
                 'id': ebooklet.id,
                 'name': ebooklet.name,
+                
                 'view_option': selection.view_option,
                 'approved': selection.approved,
             })
