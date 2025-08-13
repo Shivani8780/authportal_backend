@@ -57,15 +57,21 @@ class CustomUserChangeForm(forms.ModelForm):
 class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ['username', 'email', 'is_staff', 'is_active', 'phone_number', 'memberID', 'gender', 'get_ebooklet_approved']
+    list_display = ['get_username_as_email', 'get_email_as_username', 'is_staff', 'is_active', 'phone_number', 'memberID', 'gender', 'get_ebooklet_approved']
     search_fields = ['username', 'email', 'phone_number', 'memberID']
     list_filter = ['is_staff', 'is_active']
     fieldsets = (
         ('Personal info', {'fields': ('username', 'email', 'phone_number', 'memberID', 'gender')}),
-        # Removed Permissions section as per user request
-        # ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),  
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
+
+    def get_username_as_email(self, obj):
+        return obj.username
+    get_username_as_email.short_description = 'Email'
+
+    def get_email_as_username(self, obj):
+        return obj.email
+    get_email_as_username.short_description = 'Username'
 
     def get_ebooklet_approved(self, obj):
         selections = obj.userebookletselection_set.all()
@@ -136,21 +142,22 @@ from django.utils.html import format_html
 @admin.register(UserEBookletSelection)
 class UserEBookletSelectionAdmin(admin.ModelAdmin):
     form = UserEBookletSelectionForm
-    list_display = ['user', 'get_ebooklets', 'payment_verified', 'approved', 'view_option', 'selected_at']
+    list_display = ['get_username_as_email', 'get_email_as_username', 'get_ebooklets', 'payment_verified', 'approved', 'view_option', 'selected_at']
     list_filter = ['payment_verified', 'approved', 'view_option']
-    search_fields = ['user__username', 'ebooklet__name']
+    search_fields = ['user__username', 'user__email', 'ebooklet__name']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        # Remove values() to avoid select_related() error
-        # Instead, annotate ebooklet names using Subquery or ArrayAgg if supported
-        # SQLite does not support ArrayAgg, fallback to simple queryset without aggregation
-        return super().get_queryset(request)
+        return qs
+
+    def get_username_as_email(self, obj):
+        return obj.user.username
+    get_username_as_email.short_description = 'Email'
+
+    def get_email_as_username(self, obj):
+        return obj.user.email
+    get_email_as_username.short_description = 'Username'
 
     def get_ebooklets(self, obj):
-        # obj can be a dict (annotated queryset) or model instance
-        if isinstance(obj, dict):
-            return ", ".join(obj.get('ebooklet_names', []))
-        else:
-            return ", ".join([ebooklet.name for ebooklet in obj.ebooklet.all()])
+        return ", ".join([ebooklet.name for ebooklet in obj.ebooklet.all()])
     get_ebooklets.short_description = 'Ebooklets'

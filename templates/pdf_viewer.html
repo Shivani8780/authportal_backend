@@ -833,7 +833,7 @@
         let pageNumPending = null;
         // Detect mobile device and set appropriate initial scale
         const isMobile = window.innerWidth <= 768;
-        let currentScale = isMobile ? 1.2 : 1.5;
+        let currentScale = isMobile ? 0.8 : 0.8;
         let minScale = 0.5;
         let maxScale = 8.0; // Increased for better text readability on mobile
         let navigationLocked = false;
@@ -1283,6 +1283,9 @@
                 }
             }, 250); // Wait for resize to complete
         });
+
+        // Disable right-click context menu
+        document.addEventListener('contextmenu', event => event.preventDefault());
 
         // Start loading the PDF
         initPDF();

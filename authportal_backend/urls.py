@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from authportal_backend.core.views import home_view
 from authportal_backend.core.dashboard_views import dashboard_view, dashboard_home_view, dashboard_api_view
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('', home_view, name='home'),
@@ -29,6 +30,7 @@ urlpatterns = [
     path('dashboard/', dashboard_view, name='dashboard'),
     path('dashboard/home/', dashboard_home_view, name='dashboard-home'),
     path('dashboard/api/', dashboard_api_view, name='dashboard-api'),
+    path('logout/', LogoutView.as_view(next_page='/api/login-form/'), name='logout'),
 ]
 
 # Serve media files in both debug and production

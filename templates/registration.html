@@ -358,15 +358,16 @@
         <div class="header-container">
             <div class="header-content">
                 <!-- Logo -->
+                {% load static %}
                 <a href="/" class="logo">
-                    <div class="logo-icon">
-                        <svg class="nav-icon" fill="white" viewBox="0 0 24 24">
-                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                    <img src="{% static 'pdfs/logo11.jpeg' %}" alt="Logo" style="max-height: 50px; width: auto;">
+                    <div class="">
+
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16    -1.26 9-6.45 9-12V5l-9-4z" />
                         </svg>
                     </div>
-                    <span class="logo-text">AuthPortal</span>
+                    <span class="logo-text"></span>
                 </a>
-
                 <!-- Desktop Navigation -->
                 <nav class="nav-desktop">
                     <a href="/api/login-form/" class="nav-link" id="login-nav">
@@ -418,10 +419,10 @@
         <div id="alertContainer"></div>
 
         <form id="registrationForm" class="form" novalidate>
-            <input class="input" type="text" name="username" id="username" placeholder="Username" required />
+            <input class="input" type="text" name="username" id="username" placeholder="Email" required />
             <div class="error" id="username-error"></div>
 
-            <input class="input" type="email" name="email" id="email" placeholder="Email" required />
+            <input class="input" type="email" name="email" id="email" placeholder="Username" required />
             <div class="error" id="email-error"></div>
 
             <input class="input" type="password" name="password" id="password" placeholder="Password" required />
