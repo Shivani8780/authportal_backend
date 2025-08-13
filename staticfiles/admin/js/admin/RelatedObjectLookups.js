@@ -52,7 +52,6 @@
         }
         // GRAPPELLI CUSTOM: element focus
         elem.focus();
-        $(elem).trigger('change');
         win.close();
     }
 
