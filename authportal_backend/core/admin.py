@@ -64,6 +64,32 @@ class CustomUserAdmin(UserAdmin):
         ('Personal info', {'fields': ('username', 'email', 'phone_number', 'memberID', 'gender')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
+    actions = ['export_users_to_excel']
+
+    def export_users_to_excel(self, request, queryset):
+        import openpyxl
+        from django.http import HttpResponse
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Users"
+        headers = ['Username', 'Email', 'Phone Number', 'MemberID', 'Gender', 'Is Staff', 'Is Active', 'Date Joined']
+        ws.append(headers)
+        for user in queryset:
+            ws.append([
+                user.username,
+                user.email,
+                user.phone_number,
+                user.memberID,
+                user.gender,
+                user.is_staff,
+                user.is_active,
+                user.date_joined.strftime('%Y-%m-%d %H:%M:%S') if user.date_joined else ''
+            ])
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=users.xlsx'
+        wb.save(response)
+        return response
+    export_users_to_excel.short_description = "Export selected users to Excel"
 
     def get_username_as_email(self, obj):
         return obj.username
@@ -145,6 +171,31 @@ class UserEBookletSelectionAdmin(admin.ModelAdmin):
     list_display = ['get_username_as_email', 'get_email_as_username', 'get_ebooklets', 'payment_verified', 'approved', 'view_option', 'selected_at']
     list_filter = ['payment_verified', 'approved', 'view_option']
     search_fields = ['user__username', 'user__email', 'ebooklet__name']
+    actions = ['export_ebooklet_selections_to_excel']
+
+    def export_ebooklet_selections_to_excel(self, request, queryset):
+        import openpyxl
+        from django.http import HttpResponse
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "UserEBookletSelections"
+        headers = ['Username', 'Email', 'Ebooklets', 'Payment Verified', 'Approved', 'View Option', 'Selected At']
+        ws.append(headers)
+        for selection in queryset:
+            ws.append([
+                selection.user.username,
+                selection.user.email,
+                ", ".join([ebooklet.name for ebooklet in selection.ebooklet.all()]),
+                selection.payment_verified,
+                selection.approved,
+                selection.view_option,
+                selection.selected_at.strftime('%Y-%m-%d %H:%M:%S') if selection.selected_at else ''
+            ])
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=userebookletselections.xlsx'
+        wb.save(response)
+        return response
+    export_ebooklet_selections_to_excel.short_description = "Export selected User Ebooklet Selections to Excel"
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
