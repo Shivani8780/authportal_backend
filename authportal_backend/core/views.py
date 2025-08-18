@@ -38,7 +38,7 @@ class UserRegistrationView(View):
             email = data.get('email')
             password = data.get('password')
             phone_number = data.get('phone_number')
-            memberID = data.get('memberID')
+            dob = data.get('dob')
             ebooklet_ids = data.get('ebooklets', [])
             gender = data.get('gender')
 
@@ -50,7 +50,7 @@ class UserRegistrationView(View):
             user = User.objects.create_user(
                 username=username, email=email, password=password)
             user.phone_number = phone_number
-            user.memberID = memberID
+            user.dob = dob
             user.gender = gender
             user.save()
 

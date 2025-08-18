@@ -5,8 +5,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Auth Portal</title>
+    <title>Login - Ebooklet Views</title>
     <style>
+        @media (max-width: 768px) {
+            body .header-bottom span {
+                font-size: 21px !important;
+            }
+        }
+         /* Desktop header-bottom span font size */
+        .header-bottom span {
+            font-size: 20px;
+            color: #8B0000;
+            font-weight: bold;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -215,6 +226,9 @@
 
             .mobile-menu-btn {
                 display: block;
+                position: absolute;
+                top: 15px;
+                right: 40px;
             }
         }
 
@@ -239,6 +253,13 @@
             font-weight: 900;
             font-size: 30px;
             color: #1089d3;
+            margin-bottom: 20px;
+        }
+        .heading1 {
+            text-align: center;
+            font-weight: 900;
+            font-size: 30px;
+            color: #ffffff;
             margin-bottom: 20px;
         }
 
@@ -368,10 +389,12 @@
             }
 
             .header-bottom span {
-                font-size: 14px !important;
+                font-size: 21px !important;
                 color: #8B0000 !important;
                 font-weight: bold !important;
+                line-height: 1.1 !important;
             }
+
 
             .logos-container {
                 justify-content: center;
@@ -492,7 +515,7 @@
                 
                 <!-- Text below logos -->
                 <div class="header-bottom">
-                    <span style="font-weight: bold; color: #8B0000; font-size: 24px;">
+                    <span style="font-weight: bold; color: #8B0000; font-size: 30px;">
                         ૩૩મું ભૂદેવ જીવનસાથી પરિચય સંમેલન
                     </span>
                 </div>
@@ -522,6 +545,7 @@
             </nav>
         </div>
     </header>
+     <div class="heading1">E-Booklet Online Access</div>
 
     <div class="container">
         <div class="heading">Login</div>

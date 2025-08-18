@@ -28,6 +28,16 @@ class CustomUserChangeForm(forms.ModelForm):
         model = CustomUser
         fields = '__all__'
 
+    def clean_dob(self):
+        dob = self.cleaned_data.get('dob', '').strip()
+        if not dob:
+            raise forms.ValidationError('Date of Birth is required.')
+        dob_regex = r'^\d{2}-\d{2}-\d{4}$'
+        import re
+        if not re.match(dob_regex, dob):
+            raise forms.ValidationError('DOB must be in DD-MM-YYYY format.')
+        return dob
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
@@ -57,11 +67,15 @@ class CustomUserChangeForm(forms.ModelForm):
 class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ['get_username_as_email', 'get_email_as_username', 'is_staff', 'is_active', 'phone_number', 'memberID', 'gender', 'get_ebooklet_approved']
-    search_fields = ['username', 'email', 'phone_number', 'memberID']
+    def dob_display(self, obj):
+        return obj.dob if obj.dob else '-'
+    dob_display.short_description = 'DOB'
+
+    list_display = ['get_username_as_email', 'get_email_as_username', 'is_staff', 'is_active', 'phone_number', 'gender', 'dob_display', 'get_ebooklet_approved']
+    search_fields = ['username', 'email', 'phone_number', 'dob']
     list_filter = ['is_staff', 'is_active']
     fieldsets = (
-        ('Personal info', {'fields': ('username', 'email', 'phone_number', 'memberID', 'gender')}),
+        ('Personal info', {'fields': ('username', 'email', 'phone_number', 'dob', 'gender')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
     actions = ['export_users_to_excel']
@@ -72,14 +86,14 @@ class CustomUserAdmin(UserAdmin):
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.title = "Users"
-        headers = ['Username', 'Email', 'Phone Number', 'MemberID', 'Gender', 'Is Staff', 'Is Active', 'Date Joined']
+        headers = ['Username', 'Email', 'Phone Number', 'DOB', 'Gender', 'Is Staff', 'Is Active', 'Date Joined']
         ws.append(headers)
         for user in queryset:
             ws.append([
                 user.username,
                 user.email,
                 user.phone_number,
-                user.memberID,
+                user.dob,
                 user.gender,
                 user.is_staff,
                 user.is_active,

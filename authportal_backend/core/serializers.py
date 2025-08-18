@@ -6,21 +6,20 @@ User = get_user_model()
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    memberID = serializers.CharField(write_only=True, required=False)
+    dob = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'phone_number', 'memberID')
+        fields = ('id', 'username', 'email', 'password', 'phone_number', 'dob')
 
     def create(self, validated_data):
-        memberID = validated_data.pop('memberID', None)
+        dob = validated_data.pop('dob', None)
         user = User(
             username=validated_data['username'],
             email=validated_data['email'],
             phone_number=validated_data.get('phone_number', ''),
-            memberID=memberID
+            dob=dob
         )
-        # You can handle memberID here if you want to store it or process it
         user.set_password(validated_data['password'])
         user.save()
         return user
@@ -41,4 +40,4 @@ class UserEBookletSelectionSerializer(serializers.ModelSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'phone_number', 'memberID', 'gender']
+        fields = ['id', 'username', 'email', 'phone_number', 'dob', 'gender']
