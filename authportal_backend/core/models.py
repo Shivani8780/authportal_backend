@@ -4,6 +4,7 @@ from django.db import models
 
 class CustomUser(AbstractUser):
     # Additional fields can be added here if needed
+    email = models.CharField(max_length=254, blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female')], blank=True, null=True)
     dob = models.CharField(max_length=10, blank=True, null=True, help_text="Date of Birth in DD-MM-YYYY format")

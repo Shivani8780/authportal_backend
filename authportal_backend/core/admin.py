@@ -28,6 +28,10 @@ class CustomUserChangeForm(forms.ModelForm):
         model = CustomUser
         fields = '__all__'
 
+    def clean_email(self):
+        # Allow any text for email field, no validation
+        return self.cleaned_data.get('email', '')
+
     def clean_dob(self):
         dob = self.cleaned_data.get('dob', '').strip()
         if not dob:
