@@ -552,7 +552,8 @@
 
         <div id="alertContainer"></div>
 
-        <form id="loginForm" class="form" novalidate>
+        <form id="loginForm" class="form" novalidate method="post">
+            {% csrf_token %}
             <input class="input" type="text" name="username" id="username" placeholder="Email" required />
             <div class="error" id="username-error"></div>
 
@@ -571,7 +572,20 @@
 
     <script>
         // Configuration - Update this with your backend URL
-        const backendBaseUrl = window.location.origin; // Assumes same domain
+        // Use HTTPS for secure communication
+        const backendBaseUrl = window.location.origin.replace(/^http:/, 'https:'); // Forces HTTPS
+
+        // IMPORTANT:
+        // If login works on PC but not on mobile, check these:
+        // 1. Your site must use HTTPS everywhere (mobile browsers block secure cookies on HTTP).
+        // 2. Django settings:
+        //    SESSION_COOKIE_SECURE = True
+        //    CSRF_COOKIE_SECURE = True
+        //    CSRF_COOKIE_SAMESITE = 'Lax' (or 'None' if cross-site, but then Secure must be True)
+        // 3. Frontend and backend must use the same protocol and domain.
+        // 4. Clear mobile browser cache/cookies and test again.
+
+        // Reminder: Ensure Django settings have SESSION_COOKIE_SECURE = True and CSRF_COOKIE_SECURE = True
 
         // Form data object
         let formData = {
